@@ -52,26 +52,19 @@ sql/schema.sql      the Supabase table
 - The **rival card** shows the other person's day. It only carries real numbers
   once Supabase is connected, since localStorage can't cross devices.
 
-## Turning on Supabase
+## Supabase
 
-Right now everything saves to `localStorage`: instant, private, but stuck on
-one browser. To sync both of you:
+**Connected.** Both of you write to the same table, so laptop and phone stay in
+step and the rival card carries real numbers. The badge in the top bar reads
+`cloud`; if it ever reads `local`, the app fell back and is still saving safely
+on that device.
 
-1. Create a project at [supabase.com](https://supabase.com).
-2. SQL Editor → paste `sql/schema.sql` → **Run**.
-3. Settings → API → copy the **Project URL** and the **anon public** key.
-4. Put them in `js/config.js`:
+Credentials live in `js/config.js`, the table in `sql/schema.sql`.
 
-```js
-supabase: {
-  url: 'https://xxxxxxxxxxxx.supabase.co',
-  anonKey: 'eyJhbGciOi...',
-  table: 'winter_arc_days'
-}
-```
-
-Reload. The badge in the top bar flips from `local` to `cloud`, existing local
-data stays put, and every tick from then on lands in the database.
+To point it at a different project: create one at
+[supabase.com](https://supabase.com), run `sql/schema.sql` in its SQL Editor,
+then swap the `url` and `anonKey` under `supabase:` in `js/config.js`. Emptying
+both fields drops the app back to localStorage-only.
 
 Once connected, the app pulls fresh data whenever the tab comes back to the
 front, so ticking on your phone shows up on the laptop the moment you switch

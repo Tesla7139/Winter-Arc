@@ -25,8 +25,8 @@ window.WA_CONFIG = {
      shows up for both of you. See sql/schema.sql + README.md)
      --------------------------------------------------------------- */
   supabase: {
-    url: '',
-    anonKey: '',
+    url: 'https://qgsdtqrimqcicsshyvxa.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFnc2R0cXJpbXFjaWNzc2h5dnhhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0MDY4MzEsImV4cCI6MjEwMzk4MjgzMX0.0mOAZXyY1efuqySaFG5vrSzgbl58rpaP8ZJsr2WAEIc',
     table: 'winter_arc_days'
   },
 
