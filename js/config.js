@@ -50,6 +50,7 @@ window.WA_CONFIG = {
       line: 'Forge the body. Sharpen the mind. The winter does not negotiate.',
       listTitle: 'Daily protocol',
       noteTitle: 'War log',
+      mealsTitle: 'Fuel log',
       rivalTitle: 'The rival',
       tasks: [
         { id: 'skills',  name: 'Build skills' },
@@ -77,6 +78,7 @@ window.WA_CONFIG = {
       line: 'Soft heart, steady hands. Grow a little every single day.',
       listTitle: 'Today’s garden',
       noteTitle: 'Journal',
+      mealsTitle: 'What I ate',
       rivalTitle: 'Partner in crime',
       tasks: [
         { id: 'sleep',    name: '6–7 hours sleep' },

@@ -44,6 +44,10 @@ sql/schema.sql      the Supabase table
   from won days. Change the bar with `winThreshold` in `js/config.js`.
 - Tasks marked `weekly: N` (Sarthak's gym 5×, run 1×, reading 3×) show progress
   against the current Mon–Sun week instead of a daily target.
+- The **meals card** records what you ate. Pick a slot (breakfast / lunch /
+  dinner / snacks — it preselects the one matching the time of day), type the
+  item, hit Add. Entries group under their slot and each has an x to remove.
+  Stored per day like everything else, and sealed by the same midnight lock.
 - The **Log** box saves a free-text note per day, automatically.
 - The **rival card** shows the other person's day — that one only becomes live
   once Supabase is connected, since localStorage can't cross devices.

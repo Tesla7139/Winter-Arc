@@ -12,6 +12,7 @@
 
    Shape stored per user:
      { days: { "2026-09-03": { tasks: { gym: "done", run: "miss" },
+                               meals: [ { slot: "lunch", text: "..." } ],
                                note: "..." } } }
    ===================================================================== */
 
@@ -109,7 +110,7 @@
 
       return flushQueue()
         .then(function () {
-          return sb.from(table()).select('day,tasks,note').eq('user_id', userId);
+          return sb.from(table()).select('day,tasks,meals,note').eq('user_id', userId);
         })
         .then(function (res) {
           if (res.error) throw res.error;
@@ -117,6 +118,7 @@
           (res.data || []).forEach(function (row) {
             merged.days[String(row.day).slice(0, 10)] = {
               tasks: row.tasks || {},
+              meals: row.meals || [],
               note: row.note || ''
             };
           });
@@ -143,6 +145,7 @@
         user_id: userId,
         day: day,
         tasks: dayObj.tasks || {},
+        meals: dayObj.meals || [],
         note: dayObj.note || '',
         updated_at: new Date().toISOString()
       };
