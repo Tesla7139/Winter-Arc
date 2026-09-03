@@ -30,8 +30,16 @@ sql/schema.sql      the Supabase table
 ## How it works
 
 - **Tick (✓) / cross (✕)** each task. Tap the same button again to clear it.
-- **Arrow keys** move between days, `T` jumps back to today. You can backfill
-  any past day — the calendar and week strip are both clickable.
+- **Arrow keys** move between days, `T` jumps back to today. The calendar and
+  week strip are clickable, so you can look at any day you like.
+- **Midnight IST seals the day.** Only the current day can be edited: at 00:00
+  IST yesterday goes read-only — ticks, crosses and the log all freeze — and
+  future days aren't open yet. The task card shows how long you have left
+  (`Locks in 4h 12m`), and if you leave the page open past midnight it rolls
+  over to the new day on its own.
+  The day boundary is always IST, whatever your device clock says. This is
+  enforced in the browser, so it's a commitment device, not a security control
+  — someone determined could work around it with devtools.
 - A day counts as **won** when you tick ≥ 80% of your tasks. Streaks are built
   from won days. Change the bar with `winThreshold` in `js/config.js`.
 - Tasks marked `weekly: N` (Sarthak's gym 5×, run 1×, reading 3×) show progress

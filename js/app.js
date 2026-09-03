@@ -22,7 +22,25 @@
   function pad(n) { return n < 10 ? '0' + n : '' + n; }
   function iso(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
   function fromISO(s) { var p = String(s).split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
-  function todayISO() { return iso(new Date()); }
+  // The arc runs on IST, not on whatever the device clock says: the day
+  // boundary has to be the same for both of you.
+  var IST_OFFSET_MIN = 330;
+  function nowIST() {
+    var d = new Date();
+    return new Date(d.getTime() + (IST_OFFSET_MIN + d.getTimezoneOffset()) * 60000);
+  }
+  function todayISO() { return iso(nowIST()); }
+  function msToMidnightIST() {
+    var n = nowIST();
+    return new Date(n.getFullYear(), n.getMonth(), n.getDate() + 1).getTime() - n.getTime();
+  }
+  function fmtCountdown(ms) {
+    var mins = Math.max(0, Math.floor(ms / 60000));
+    var h = Math.floor(mins / 60);
+    return h > 0 ? h + 'h ' + (mins % 60) + 'm' : mins + 'm';
+  }
+  // Only the current IST day can be edited. Midnight seals it.
+  function isLocked(date) { return date !== todayISO(); }
   function addDays(s, n) { var d = fromISO(s); d.setDate(d.getDate() + n); return iso(d); }
   function diffDays(a, b) { return Math.round((fromISO(b) - fromISO(a)) / 86400000); }
   function dowIndex(s) { return (fromISO(s).getDay() + 6) % 7; }          // 0 = Monday
@@ -221,6 +239,7 @@
     $('#footLeft').textContent = left >= 0 ? left + ' days left' : 'arc complete';
 
     wireApp();
+    startClock();
 
     Store.load(userId).then(function (data) {
       S.data = data;
@@ -254,6 +273,7 @@
     $('#nextMonth').addEventListener('click', function () { shiftMonth(1); });
 
     $('#allDone').addEventListener('click', function () {
+      if (!guardEdit()) return;
       var day = ensureDay(S.view);
       S.user.tasks.forEach(function (t) { day.tasks[t.id] = 'done'; });
       persist(S.view);
@@ -262,6 +282,7 @@
     });
 
     $('#clearDay').addEventListener('click', function () {
+      if (!guardEdit()) return;
       var day = ensureDay(S.view);
       day.tasks = {};
       persist(S.view);
@@ -271,6 +292,7 @@
     $('#taskList').addEventListener('click', function (e) {
       var btn = e.target.closest ? e.target.closest('.tbtn') : null;
       if (!btn) return;
+      if (!guardEdit()) return;
       var li = btn.closest('.task');
       var id = li.getAttribute('data-id');
       var want = btn.getAttribute('data-act');
@@ -284,6 +306,7 @@
 
     var note = $('#note');
     note.addEventListener('input', function () {
+      if (isLocked(S.view)) { note.value = dayOf(S.data, S.view).note || ''; return; }
       var day = ensureDay(S.view);
       day.note = note.value;
       $('#noteHint').textContent = 'saving…';
@@ -301,6 +324,14 @@
       if (e.key === 'ArrowRight') setView(addDays(S.view, 1));
       if (e.key === 't' || e.key === 'T') setView(todayISO());
     });
+  }
+
+  function guardEdit() {
+    if (!isLocked(S.view)) return true;
+    toast(diffDays(todayISO(), S.view) < 0
+      ? 'That day was sealed at midnight.'
+      : 'That day has not started yet.');
+    return false;
   }
 
   function persist(date) {
@@ -326,6 +357,7 @@
     renderHero();
     renderWeek();
     renderTasks();
+    renderLock();
     renderNote();
     renderCalendar();
     renderBars();
@@ -389,6 +421,7 @@
   function renderTasks() {
     var list = $('#taskList');
     var day = dayOf(S.data, S.view);
+    var dis = isLocked(S.view) ? ' disabled' : '';
     var html = '';
 
     S.user.tasks.forEach(function (t, i) {
@@ -407,13 +440,49 @@
                 '<span class="task-idx">' + pad(i + 1) + '</span>' +
                 '<span class="task-main"><span class="task-name">' + t.name + '</span>' + meta + '</span>' +
                 '<span class="task-btns">' +
-                  '<button type="button" class="tbtn tbtn-done" data-act="done" aria-label="Done: ' + t.name + '">' + SVG_TICK + '</button>' +
-                  '<button type="button" class="tbtn tbtn-miss" data-act="miss" aria-label="Missed: ' + t.name + '">' + SVG_CROSS + '</button>' +
+                  '<button type="button" class="tbtn tbtn-done" data-act="done"' + dis + ' aria-label="Done: ' + t.name + '">' + SVG_TICK + '</button>' +
+                  '<button type="button" class="tbtn tbtn-miss" data-act="miss"' + dis + ' aria-label="Missed: ' + t.name + '">' + SVG_CROSS + '</button>' +
                 '</span>' +
               '</li>';
     });
 
     list.innerHTML = html;
+  }
+
+  var SVG_LOCK = '<svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3.4" y="7" width="9.2" height="6.4" rx="1.6"/><path d="M5.6 7V5.2a2.4 2.4 0 0 1 4.8 0V7" stroke-linecap="round"/></svg>';
+
+  function renderLock() {
+    var locked = isLocked(S.view);
+    var chip = $('#lockChip');
+
+    $('#allDone').disabled = locked;
+    $('#clearDay').disabled = locked;
+    $('#note').readOnly = locked;
+
+    if (locked) {
+      chip.className = 'lock-chip sealed';
+      chip.innerHTML = SVG_LOCK + (diffDays(todayISO(), S.view) < 0 ? 'Sealed' : 'Not open yet');
+    } else {
+      chip.className = 'lock-chip';
+      chip.textContent = 'Locks in ' + fmtCountdown(msToMidnightIST());
+    }
+  }
+
+  // Watch for the IST date rolling over while the app is left open.
+  function startClock() {
+    var lastToday = todayISO();
+    setInterval(function () {
+      var t = todayISO();
+      if (t === lastToday) { renderLock(); return; }
+      var wasOnToday = (S.view === lastToday);
+      lastToday = t;
+      if (wasOnToday) {
+        setView(t);
+        toast('Midnight. Yesterday is sealed.');
+      } else {
+        renderAll();
+      }
+    }, 15000);
   }
 
   function renderNote() {

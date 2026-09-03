@@ -374,6 +374,35 @@ button { cursor: pointer; background: none; border: 0; }
 
 .head-actions { display: flex; gap: 8px; align-items: center; }
 
+/* Day lock: everything but the current IST day is read-only. */
+.lock-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--label);
+  white-space: nowrap;
+}
+
+.lock-chip.sealed { color: var(--muted); border-color: var(--line-strong); }
+.lock-chip svg { flex: none; }
+
+.tbtn:disabled, .btn-ghost:disabled { opacity: 0.34; cursor: not-allowed; }
+.tbtn:disabled:hover, .btn-ghost:disabled:hover {
+  transform: none;
+  background: none;
+  border-color: var(--line-strong);
+  color: var(--muted);
+}
+
+textarea#note[readonly] { opacity: 0.72; cursor: default; }
+textarea#note[readonly]:focus { border-color: var(--line-strong); box-shadow: none; }
+
 /* Entrance animation is pure CSS on purpose: content is never hidden
    behind a script that might not run. */
 .reveal { animation: revealUp 0.65s cubic-bezier(0.22, 1, 0.36, 1) both; }
