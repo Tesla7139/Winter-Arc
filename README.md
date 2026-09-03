@@ -82,7 +82,7 @@ same data from your own phones.
 Everything lives in `js/config.js`:
 
 - `challenge.start` / `challenge.days` — the arc window (currently
-  1 Sep 2026, 90 days).
+  1 Sep 2026 to 15 Oct 2026, 45 days).
 - `challenge.winThreshold` — how much of a day counts as a win.
 - `users.<person>.tasks` — add, remove or rename tasks freely.
   **Keep the `id` stable** once you've started logging, or old entries lose

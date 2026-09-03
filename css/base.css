@@ -219,22 +219,6 @@ button { cursor: pointer; background: none; border: 0; }
   40%, 60% { transform: translateX(7px); }
 }
 
-.gate-foot {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  z-index: 5;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 16px;
-  font-size: 10.5px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.55);
-  mix-blend-mode: difference;
-  pointer-events: none;
-}
-
 /* fade the whole gate out on a successful login */
 .gate-wrap.leaving { animation: gateOut 0.55s ease forwards; }
 @keyframes gateOut {
@@ -743,7 +727,6 @@ textarea#note::placeholder { color: var(--label); }
   .gate-head { position: relative; padding: 18px; }
   .gate-wrap { overflow-y: auto; }
   body.mode-gate { overflow: auto; }
-  .gate-foot { position: relative; }
 }
 
 @media (max-width: 620px) {

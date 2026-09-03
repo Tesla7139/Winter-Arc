@@ -145,7 +145,6 @@
 
   function initGate() {
     $('#gateMeta').textContent = 'Day ' + arcDayNumber(todayISO()) + ' / ' + ARC_DAYS;
-    $('#gateRange').textContent = fmtLong(ARC_START) + ' — ' + fmtLong(ARC_END);
 
     $$('.gate').forEach(function (gate) {
       var id = gate.getAttribute('data-user');
@@ -545,7 +544,6 @@
   /* ============================== START ============================== */
 
   Store.init().then(function () {
-    $('#gateStorage').textContent = Store.mode === 'cloud' ? 'synced · supabase' : 'this device only';
     initGate();
 
     var session = Store.getSession();
