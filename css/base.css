@@ -298,6 +298,8 @@ button { cursor: pointer; background: none; border: 0; }
   background: var(--label);
 }
 
+.sync { cursor: pointer; transition: color 0.2s ease; }
+.sync:hover { color: var(--text); }
 .sync.is-cloud { color: var(--accent); }
 .sync.is-cloud::before { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
 

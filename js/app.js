@@ -244,7 +244,28 @@
     wireApp();
     startClock();
 
-    Store.load(userId).then(function (data) {
+    refresh();
+
+    // Two devices, one arc: pull again whenever the tab comes back to the
+    // front, so what you ticked on your phone shows up on the laptop.
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) refresh();
+    });
+    window.addEventListener('focus', function () { refresh(); });
+    $('#syncDot').addEventListener('click', function () { refresh(true); });
+  }
+
+  var lastRefresh = 0;
+
+  function refresh(force) {
+    if (!S.userId) return;
+    var now = Date.now();
+    if (!force && now - lastRefresh < 8000) return;
+    lastRefresh = now;
+
+    if (foodDirty) saveFood();
+
+    Store.load(S.userId).then(function (data) {
       S.data = data;
       setSyncBadge();
       renderAll();

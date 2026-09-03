@@ -73,6 +73,10 @@ supabase: {
 Reload. The badge in the top bar flips from `local` to `cloud`, existing local
 data stays put, and every tick from then on lands in the database.
 
+Once connected, the app pulls fresh data whenever the tab comes back to the
+front, so ticking on your phone shows up on the laptop the moment you switch
+back to it. The badge is also a button — tap it to sync right now.
+
 Writes are optimistic: localStorage is written first so the UI never waits, the
 cloud write follows, and anything that fails while you're offline is queued and
 retried on the next save or page load.
