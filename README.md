@@ -49,7 +49,7 @@ sql/schema.sql      the Supabase table
   item, hit Add. Entries group under their slot and each has an x to remove.
   Stored per day like everything else, and sealed by the same midnight lock.
 - The **Log** box saves a free-text note per day, automatically.
-- The **rival card** shows the other person's day — that one only becomes live
+- The **rival card** shows the other person's day. It only carries real numbers
   once Supabase is connected, since localStorage can't cross devices.
 
 ## Turning on Supabase

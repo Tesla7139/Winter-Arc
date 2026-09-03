@@ -660,12 +660,9 @@
     $('#rivalWins').textContent = winCount(S.rivalData, rTasks);
 
     var mine = Math.round(score(S.data, S.user.tasks, today).pct * 100);
-    var msg;
-    if (!loggedDays(S.rivalData).length) {
-      msg = Store.mode === 'cloud'
-        ? r.name + ' hasn’t logged anything yet.'
-        : r.name + '’s data lives on their device — connect Supabase to see it here.';
-    } else if (mine > pct) msg = 'You’re ahead by ' + (mine - pct) + ' points today.';
+    var msg = '';
+    if (!loggedDays(S.rivalData).length) msg = r.name + ' hasn’t logged anything yet.';
+    else if (mine > pct) msg = 'You’re ahead by ' + (mine - pct) + ' points today.';
     else if (pct > mine) msg = r.name + ' is ahead by ' + (pct - mine) + ' points today. Move.';
     else msg = 'Dead even today.';
 
