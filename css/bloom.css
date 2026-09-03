@@ -1,0 +1,147 @@
+/* =====================================================================
+   BLOOM — Inan's theme.
+   Soft petal palette: rose, blush, cream and sage on warm white, with a
+   Cormorant Garamond display face and drifting petals.
+   ===================================================================== */
+
+[data-theme="bloom"], .t-bloom {
+  --bg: #FFF7F4;
+  --bg-2: #FDEDF0;
+
+  --text: #4A2C38;
+  --muted: rgba(74, 44, 56, 0.68);
+  --label: rgba(74, 44, 56, 0.42);
+
+  --accent: #E1719A;
+  --accent-rgb: 225, 113, 154;
+  --accent-soft: rgba(225, 113, 154, 0.14);
+  --accent-glow: rgba(225, 113, 154, 0.4);
+  --on-accent: #FFF7F4;
+
+  --bad: #C77B8B;
+  --on-bad: #FFF7F4;
+
+  --card: rgba(255, 255, 255, 0.66);
+  --card-shadow: 0 20px 50px rgba(196, 122, 145, 0.16);
+  --sunken: rgba(225, 113, 154, 0.05);
+  --bar-bg: rgba(255, 247, 244, 0.78);
+  --field-bg: rgba(255, 255, 255, 0.6);
+
+  --line: rgba(196, 122, 145, 0.16);
+  --line-strong: rgba(196, 122, 145, 0.3);
+  --ring-track: rgba(196, 122, 145, 0.16);
+
+  --done-bg: rgba(225, 113, 154, 0.09);
+  --done-line: rgba(225, 113, 154, 0.36);
+  --miss-line: rgba(199, 123, 139, 0.34);
+
+  --on-cell: #FFF7F4;
+
+  --orb-1: rgba(255, 199, 214, 0.75);
+  --orb-2: rgba(214, 225, 199, 0.6);
+  --orb-3: rgba(255, 224, 205, 0.7);
+  --orb-opacity: 0.75;
+
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --display-weight: 600;
+  --display-tracking: 0.005em;
+  --display-case: none;
+  --display-shadow: none;
+
+  --h2-size: 11px;
+  --h2-tracking: 0.18em;
+  --h2-case: uppercase;
+
+  --rival-accent: #E07020;
+}
+
+/* Cormorant runs small — scale the display sizes up a touch. */
+[data-theme="bloom"] .display { font-size: clamp(2.3rem, 6vw, 4rem); font-weight: 600; }
+[data-theme="bloom"] .ring-mid b { font-size: 30px; }
+[data-theme="bloom"] .stat b { font-size: 27px; }
+[data-theme="bloom"] .rival-name { font-size: 26px; }
+[data-theme="bloom"] .rival-stats b { font-size: 22px; }
+[data-theme="bloom"] .brand { font-family: 'Inter', sans-serif; font-weight: 600; }
+[data-theme="bloom"] .task-idx { font-family: 'Inter', sans-serif; }
+[data-theme="bloom"] .bar-pct { font-family: 'Inter', sans-serif; font-size: 11.5px; }
+[data-theme="bloom"] .wd-num { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 12px; }
+
+.t-bloom .gate-name { font-size: clamp(2.6rem, 7vw, 5rem); font-weight: 600; }
+
+/* --- bloom gate backdrop: watercolour wash + drifting petals --- */
+.t-bloom .gate-bg {
+  background:
+    radial-gradient(80% 70% at 78% 8%, rgba(255, 205, 219, 0.9) 0%, transparent 62%),
+    radial-gradient(70% 60% at 8% 88%, rgba(214, 231, 210, 0.85) 0%, transparent 60%),
+    radial-gradient(90% 80% at 50% 50%, rgba(255, 236, 224, 0.9) 0%, transparent 70%),
+    linear-gradient(160deg, #FFF7F4 0%, #FDEDF0 100%);
+}
+
+.t-bloom .gate-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(225, 113, 154, 0.14) 1px, transparent 1px);
+  background-size: 22px 22px;
+  mask-image: radial-gradient(100% 100% at 80% 10%, #000, transparent 70%);
+  -webkit-mask-image: radial-gradient(100% 100% at 80% 10%, #000, transparent 70%);
+}
+
+.petal {
+  position: absolute;
+  top: -8%;
+  width: 14px;
+  height: 14px;
+  background: rgba(255, 176, 198, 0.85);
+  border-radius: 60% 0 60% 0;
+  opacity: 0;
+  animation: petalFall linear infinite;
+}
+
+.petal.p1 { left: 12%; width: 12px; height: 12px; animation-duration: 15s; animation-delay: 0s;   }
+.petal.p2 { left: 28%; width: 9px;  height: 9px;  animation-duration: 19s; animation-delay: 2.5s; background: rgba(255, 214, 224, 0.9); }
+.petal.p3 { left: 46%; width: 15px; height: 15px; animation-duration: 13s; animation-delay: 5s;   }
+.petal.p4 { left: 64%; width: 10px; height: 10px; animation-duration: 21s; animation-delay: 1.2s; background: rgba(246, 198, 214, 0.9); }
+.petal.p5 { left: 78%; width: 13px; height: 13px; animation-duration: 17s; animation-delay: 7s;   }
+.petal.p6 { left: 91%; width: 8px;  height: 8px;  animation-duration: 23s; animation-delay: 3.6s; background: rgba(255, 224, 205, 0.95); }
+
+@keyframes petalFall {
+  0%   { opacity: 0; transform: translate3d(0, 0, 0) rotate(0deg); }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { opacity: 0; transform: translate3d(-40px, 118vh, 0) rotate(420deg); }
+}
+
+.t-bloom .gate-name::after {
+  content: "";
+  display: block;
+  width: 78px;
+  height: 2px;
+  margin-top: 16px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #E1719A, rgba(225, 113, 154, 0));
+}
+
+/* --- bloom app chrome --- */
+[data-theme="bloom"] body { background: var(--bg); }
+
+[data-theme="bloom"] .app-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(225, 113, 154, 0.1) 1px, transparent 1px);
+  background-size: 26px 26px;
+  mask-image: radial-gradient(90% 80% at 50% 0%, #000, transparent 75%);
+  -webkit-mask-image: radial-gradient(90% 80% at 50% 0%, #000, transparent 75%);
+}
+
+[data-theme="bloom"] .card {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.5), transparent 46%),
+    var(--card);
+}
+
+[data-theme="bloom"] .task { border-radius: 18px; }
+[data-theme="bloom"] .tbtn { border-radius: 50%; }
+[data-theme="bloom"] .cell { border-radius: 50%; }
+[data-theme="bloom"] .sw { border-radius: 50%; }

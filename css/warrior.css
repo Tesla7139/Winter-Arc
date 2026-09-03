@@ -1,0 +1,139 @@
+/* =====================================================================
+   WARRIOR — Sarthak's theme.
+   Palette + type lifted from builddetail.md (Cyber Ronin): ember orange
+   on scorched black, cream text, Orbitron display, glass cards.
+   ===================================================================== */
+
+[data-theme="warrior"], .t-warrior {
+  --bg: #0A0807;
+  --bg-2: #14100C;
+
+  --text: #FBDBAF;
+  --muted: rgba(251, 219, 175, 0.68);
+  --label: rgba(251, 219, 175, 0.42);
+
+  --accent: #E07020;
+  --accent-rgb: 224, 112, 32;
+  --accent-soft: rgba(224, 112, 32, 0.14);
+  --accent-glow: rgba(224, 112, 32, 0.45);
+  --on-accent: #120A04;
+
+  --bad: #B33F2E;
+  --on-bad: #FBDBAF;
+
+  --card: rgba(16, 12, 9, 0.58);
+  --card-shadow: 0 22px 60px rgba(0, 0, 0, 0.45);
+  --sunken: rgba(251, 219, 175, 0.035);
+  --bar-bg: rgba(10, 8, 7, 0.72);
+  --field-bg: rgba(251, 219, 175, 0.04);
+
+  --line: rgba(251, 219, 175, 0.1);
+  --line-strong: rgba(251, 219, 175, 0.22);
+  --ring-track: rgba(251, 219, 175, 0.1);
+
+  --done-bg: rgba(224, 112, 32, 0.1);
+  --done-line: rgba(224, 112, 32, 0.4);
+  --miss-line: rgba(179, 63, 46, 0.35);
+
+  --on-cell: #150C05;
+
+  --orb-1: rgba(196, 90, 24, 0.55);
+  --orb-2: rgba(224, 112, 32, 0.32);
+  --orb-3: rgba(90, 30, 10, 0.6);
+  --orb-opacity: 0.5;
+
+  --font-display: 'Orbitron', 'Arial Narrow', sans-serif;
+  --display-weight: 600;
+  --display-tracking: 0.03em;
+  --display-case: uppercase;
+  --display-shadow: 0 2px 30px rgba(0, 0, 0, 0.4);
+
+  --h2-size: 11.5px;
+  --h2-tracking: 0.2em;
+  --h2-case: uppercase;
+
+  --rival-accent: #E1719A;
+}
+
+/* --- warrior gate backdrop: ember glow, blueprint grid, scanlines --- */
+.t-warrior .gate-bg {
+  background:
+    radial-gradient(120% 90% at 18% 12%, rgba(224, 112, 32, 0.34) 0%, transparent 58%),
+    radial-gradient(90% 80% at 84% 96%, rgba(196, 90, 24, 0.26) 0%, transparent 60%),
+    linear-gradient(160deg, #14100C 0%, #0A0807 62%, #060403 100%);
+}
+
+.t-warrior .gate-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(251, 219, 175, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(251, 219, 175, 0.05) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(120% 100% at 20% 10%, #000 0%, transparent 72%);
+  -webkit-mask-image: radial-gradient(120% 100% at 20% 10%, #000 0%, transparent 72%);
+}
+
+.t-warrior .gate-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0px,
+    rgba(0, 0, 0, 0) 2px,
+    rgba(0, 0, 0, 0.16) 3px
+  );
+  opacity: 0.5;
+  animation: scan 9s linear infinite;
+}
+
+@keyframes scan {
+  from { transform: translateY(0); }
+  to   { transform: translateY(60px); }
+}
+
+.t-warrior .gate-name {
+  position: relative;
+  font-weight: 700;
+}
+
+/* thin ember rule under the name */
+.t-warrior .gate-name::after {
+  content: "";
+  display: block;
+  width: 74px;
+  height: 2px;
+  margin-top: 18px;
+  background: linear-gradient(90deg, #E07020, transparent);
+}
+
+/* --- warrior app chrome --- */
+[data-theme="warrior"] body,
+body[data-theme="warrior"] { background: var(--bg); }
+
+[data-theme="warrior"] .card {
+  background:
+    linear-gradient(180deg, rgba(251, 219, 175, 0.03), transparent 40%),
+    var(--card);
+}
+
+[data-theme="warrior"] .hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background-image:
+    linear-gradient(rgba(251, 219, 175, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(251, 219, 175, 0.04) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(90% 120% at 88% 0%, #000, transparent 70%);
+  -webkit-mask-image: radial-gradient(90% 120% at 88% 0%, #000, transparent 70%);
+}
+
+[data-theme="warrior"] .display { font-weight: 700; }
+
+[data-theme="warrior"] .gate-go,
+[data-theme="warrior"] .tbtn-done { font-weight: 700; }

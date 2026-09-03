@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en" data-theme="warrior">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Winter Arc // Sarthak &amp; Inan</title>
+<meta name="description" content="A two-person winter challenge tracker. Tick it or cross it. Every day.">
+<meta name="theme-color" content="#0A0807">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/warrior.css">
+<link rel="stylesheet" href="css/bloom.css">
+</head>
+<body class="mode-gate">
+
+<!-- ============================== GATE / LOGIN ============================== -->
+<div id="gate" class="gate-wrap">
+  <header class="gate-head">
+    <span class="gate-brand">WINTER&nbsp;ARC</span>
+    <span class="gate-meta" id="gateMeta">Day 1</span>
+  </header>
+
+  <div class="gates">
+    <!-- Sarthak -->
+    <section class="gate t-warrior" data-user="sarthak">
+      <div class="gate-bg" aria-hidden="true"></div>
+      <div class="gate-inner">
+        <span class="gate-tag">01 // Discipline</span>
+        <h2 class="gate-name">SARTHAK</h2>
+        <p class="gate-line">Forge the body. Sharpen the mind. The winter does not negotiate.</p>
+        <form class="gate-form" autocomplete="off">
+          <div class="gate-field">
+            <input type="password" name="pass" placeholder="Passcode" aria-label="Sarthak passcode" autocomplete="off" spellcheck="false">
+            <button type="submit" class="gate-go">
+              Enter
+              <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 8h10M9 4.5L12.5 8 9 11.5"/></svg>
+            </button>
+          </div>
+          <p class="gate-err" role="alert"></p>
+        </form>
+      </div>
+    </section>
+
+    <!-- Inan -->
+    <section class="gate t-bloom" data-user="inan">
+      <div class="gate-bg" aria-hidden="true">
+        <span class="petal p1"></span><span class="petal p2"></span><span class="petal p3"></span>
+        <span class="petal p4"></span><span class="petal p5"></span><span class="petal p6"></span>
+      </div>
+      <div class="gate-inner">
+        <span class="gate-tag">02 &middot; Bloom</span>
+        <h2 class="gate-name">Inan</h2>
+        <p class="gate-line">Soft heart, steady hands. Grow a little every single day.</p>
+        <form class="gate-form" autocomplete="off">
+          <div class="gate-field">
+            <input type="password" name="pass" placeholder="Passcode" aria-label="Inan passcode" autocomplete="off" spellcheck="false">
+            <button type="submit" class="gate-go">
+              Enter
+              <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 8h10M9 4.5L12.5 8 9 11.5"/></svg>
+            </button>
+          </div>
+          <p class="gate-err" role="alert"></p>
+        </form>
+      </div>
+    </section>
+  </div>
+
+  <footer class="gate-foot">
+    <span id="gateStorage">local storage</span>
+    <span class="dot">&bull;</span>
+    <span id="gateRange">&nbsp;</span>
+  </footer>
+</div>
+
+<!-- ============================== APP ============================== -->
+<div id="app" class="app" hidden>
+  <div class="app-bg" aria-hidden="true">
+    <span class="orb orb-1"></span><span class="orb orb-2"></span><span class="orb orb-3"></span>
+  </div>
+
+  <header class="topbar">
+    <div class="topbar-l">
+      <span class="brand">WINTER&nbsp;ARC</span>
+      <span class="chip" id="dayChip">Day 1</span>
+    </div>
+    <div class="topbar-r">
+      <span class="sync" id="syncDot" title="Where your data is saved">local</span>
+      <span class="who" id="whoName">&mdash;</span>
+      <button class="btn-ghost sm" id="logoutBtn" type="button">Exit</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <!-- HERO -->
+    <section class="card hero reveal">
+      <div class="hero-l">
+        <p class="label">Today&rsquo;s ledger</p>
+        <h1 class="display" id="heroTitle">&mdash;</h1>
+        <p class="hero-line" id="heroLine">&nbsp;</p>
+
+        <div class="datenav">
+          <button class="nav-btn" id="prevDay" type="button" aria-label="Previous day">
+            <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3.5L5.5 8 10 12.5"/></svg>
+          </button>
+          <div class="datenav-mid">
+            <strong id="dateLabel">&mdash;</strong>
+            <span id="dateRel">&nbsp;</span>
+          </div>
+          <button class="nav-btn" id="nextDay" type="button" aria-label="Next day">
+            <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg>
+          </button>
+          <button class="btn-ghost sm" id="todayBtn" type="button">Today</button>
+        </div>
+      </div>
+
+      <div class="hero-r">
+        <div class="ring-wrap">
+          <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="ring-track" cx="60" cy="60" r="52"></circle>
+            <circle class="ring-fill" id="ringFill" cx="60" cy="60" r="52"></circle>
+          </svg>
+          <div class="ring-mid">
+            <b id="ringPct">0%</b>
+            <span id="ringCount">0 / 0</span>
+          </div>
+        </div>
+        <div class="stat-col">
+          <div class="stat"><b id="statStreak">0</b><span>Current streak</span></div>
+          <div class="stat"><b id="statBest">0</b><span>Best streak</span></div>
+          <div class="stat"><b id="statWins">0</b><span>Days won</span></div>
+          <div class="stat"><b id="statAvg">0%</b><span>Avg completion</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WEEK STRIP -->
+    <section class="card reveal">
+      <div class="card-head">
+        <h2>Last 7 days</h2>
+        <span class="label" id="weekPct">&nbsp;</span>
+      </div>
+      <div class="weekstrip" id="weekStrip"></div>
+    </section>
+
+    <!-- TASKS -->
+    <section class="card reveal">
+      <div class="card-head">
+        <h2 id="tasksTitle">Daily protocol</h2>
+        <div class="head-actions">
+          <button class="btn-ghost sm" id="allDone" type="button">All &check;</button>
+          <button class="btn-ghost sm" id="clearDay" type="button">Clear</button>
+        </div>
+      </div>
+      <ul class="task-list" id="taskList"></ul>
+    </section>
+
+    <div class="grid2">
+      <!-- NOTE -->
+      <section class="card reveal">
+        <div class="card-head">
+          <h2 id="noteTitle">Log</h2>
+          <span class="label save-hint" id="noteHint">&nbsp;</span>
+        </div>
+        <textarea id="note" rows="5" placeholder="How did today actually go?"></textarea>
+      </section>
+
+      <!-- RIVAL -->
+      <section class="card reveal rival">
+        <div class="card-head">
+          <h2 id="rivalTitle">The other one</h2>
+        </div>
+        <div class="rival-body">
+          <div class="rival-name" id="rivalName">&mdash;</div>
+          <div class="rival-bar"><span id="rivalBar" style="width:0%"></span></div>
+          <div class="rival-stats">
+            <div><b id="rivalPct">&mdash;</b><span>today</span></div>
+            <div><b id="rivalStreak">&mdash;</b><span>streak</span></div>
+            <div><b id="rivalWins">&mdash;</b><span>days won</span></div>
+          </div>
+          <p class="rival-note" id="rivalNote">&nbsp;</p>
+        </div>
+      </section>
+    </div>
+
+    <!-- CALENDAR -->
+    <section class="card reveal">
+      <div class="card-head">
+        <h2 id="monthLabel">&mdash;</h2>
+        <div class="head-actions">
+          <button class="nav-btn sm" id="prevMonth" type="button" aria-label="Previous month">
+            <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3.5L5.5 8 10 12.5"/></svg>
+          </button>
+          <button class="nav-btn sm" id="nextMonth" type="button" aria-label="Next month">
+            <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5L10.5 8 6 12.5"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="cal-dow" aria-hidden="true">
+        <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
+      </div>
+      <div class="cal" id="cal"></div>
+      <div class="legend">
+        <span class="legend-item"><i class="sw" style="--f:.18"></i> low</span>
+        <span class="legend-item"><i class="sw" style="--f:.55"></i> mid</span>
+        <span class="legend-item"><i class="sw" style="--f:1"></i> full</span>
+        <span class="legend-item"><i class="sw sw-win"></i> day won</span>
+      </div>
+    </section>
+
+    <!-- CONSISTENCY -->
+    <section class="card reveal">
+      <div class="card-head">
+        <h2>Consistency</h2>
+        <span class="label">since day one</span>
+      </div>
+      <ul class="bars" id="taskBars"></ul>
+    </section>
+
+  </main>
+
+  <footer class="foot">
+    <span id="footRange">&nbsp;</span>
+    <span class="dot">&bull;</span>
+    <span id="footLeft">&nbsp;</span>
+  </footer>
+</div>
+
+<!-- Supabase JS (optional). If offline or unconfigured, the app silently uses localStorage. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/store.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
