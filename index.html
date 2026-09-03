@@ -158,14 +158,12 @@
     <section class="card reveal">
       <div class="card-head">
         <h2 id="mealsTitle">Meals</h2>
-        <span class="label" id="mealsCount">&nbsp;</span>
+        <span class="label save-hint" id="foodHint">&nbsp;</span>
       </div>
-      <div class="meal-slots" id="mealSlots"></div>
-      <form class="meal-add" id="mealForm" autocomplete="off">
-        <input type="text" id="mealInput" placeholder="What did you have?" maxlength="120" spellcheck="false">
-        <button type="submit" class="meal-go" id="mealGo">Add</button>
-      </form>
-      <div class="meal-groups" id="mealGroups"></div>
+      <textarea id="foodBox" rows="5" placeholder="What did you eat today?"></textarea>
+      <div class="food-actions" id="foodActions">
+        <button type="button" class="food-save" id="foodSave">Save</button>
+      </div>
     </section>
 
     <div class="grid2">

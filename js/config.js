@@ -51,6 +51,7 @@ window.WA_CONFIG = {
       listTitle: 'Daily protocol',
       noteTitle: 'War log',
       mealsTitle: 'Fuel log',
+      mealsPlaceholder: 'Everything that went in today \u2014 meals, snacks, drinks. Write it down before midnight.',
       rivalTitle: 'The rival',
       tasks: [
         { id: 'skills',  name: 'Build skills' },
@@ -79,6 +80,7 @@ window.WA_CONFIG = {
       listTitle: 'Today’s garden',
       noteTitle: 'Journal',
       mealsTitle: 'What I ate',
+      mealsPlaceholder: 'What did you eat today? Meals, snacks, little treats \u2014 note it all down here.',
       rivalTitle: 'Partner in crime',
       tasks: [
         { id: 'sleep',    name: '6–7 hours sleep' },

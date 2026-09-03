@@ -39,11 +39,6 @@
     var h = Math.floor(mins / 60);
     return h > 0 ? h + 'h ' + (mins % 60) + 'm' : mins + 'm';
   }
-  function defaultSlot() {
-    var h = nowIST().getHours();
-    return h < 11 ? 'breakfast' : h < 16 ? 'lunch' : h < 22 ? 'dinner' : 'snack';
-  }
-
   // Only the current IST day can be edited. Midnight seals it.
   function isLocked(date) { return date !== todayISO(); }
   function addDays(s, n) { var d = fromISO(s); d.setDate(d.getDate() + n); return iso(d); }
@@ -61,16 +56,6 @@
     return (d < 0 ? Math.abs(d) + ' days ago' : 'in ' + d + ' days');
   }
 
-  var SLOTS = [
-    { id: 'breakfast', name: 'Breakfast' },
-    { id: 'lunch',     name: 'Lunch' },
-    { id: 'dinner',    name: 'Dinner' },
-    { id: 'snack',     name: 'Snacks' }
-  ];
-
-  var ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
-  function esc(str) { return String(str).replace(/[&<>"']/g, function (c) { return ESC[c]; }); }
-
   /* ============================== STATE ============================== */
 
   var S = {
@@ -81,7 +66,6 @@
     rivalData: { days: {} },
     view: todayISO(),
     month: null,
-    slot: 'breakfast',
     noteTimer: null
   };
 
@@ -98,13 +82,13 @@
 
   function dayOf(data, date) {
     var d = data.days[date];
-    return d ? d : { tasks: {}, meals: [], note: '' };
+    return d ? d : { tasks: {}, food: '', note: '' };
   }
 
   function ensureDay(date) {
-    if (!S.data.days[date]) S.data.days[date] = { tasks: {}, meals: [], note: '' };
+    if (!S.data.days[date]) S.data.days[date] = { tasks: {}, food: '', note: '' };
     if (!S.data.days[date].tasks) S.data.days[date].tasks = {};
-    if (!S.data.days[date].meals) S.data.days[date].meals = [];
+    if (typeof S.data.days[date].food !== 'string') S.data.days[date].food = foodOf(S.data.days[date]);
     return S.data.days[date];
   }
 
@@ -236,7 +220,6 @@
     S.view = todayISO();
     S.month = iso(new Date(fromISO(S.view).getFullYear(), fromISO(S.view).getMonth(), 1));
     S.rival = u.rival && CFG.users[u.rival] ? CFG.users[u.rival] : null;
-    S.slot = defaultSlot();
 
     document.documentElement.setAttribute('data-theme', u.theme);
     document.body.classList.remove('mode-gate');
@@ -251,6 +234,7 @@
     $('#tasksTitle').textContent = u.listTitle || 'Daily protocol';
     $('#noteTitle').textContent = u.noteTitle || 'Log';
     $('#mealsTitle').textContent = u.mealsTitle || 'Meals';
+    $('#foodBox').placeholder = u.mealsPlaceholder || 'What did you eat today?';
     $('#rivalTitle').textContent = u.rivalTitle || 'The other one';
     $('#footRange').textContent = fmtLong(ARC_START) + ' — ' + fmtLong(ARC_END);
 
@@ -323,36 +307,21 @@
       maybeCelebrate();
     });
 
-    $('#mealSlots').addEventListener('click', function (e) {
-      var b = e.target.closest ? e.target.closest('.slot') : null;
-      if (!b) return;
-      S.slot = b.getAttribute('data-slot');
-      renderMeals();
-      $('#mealInput').focus();
+    var box = $('#foodBox');
+
+    box.addEventListener('input', function () {
+      if (isLocked(S.view)) { box.value = foodOf(dayOf(S.data, S.view)); return; }
+      foodDirty = true;
+      $('#foodHint').textContent = 'unsaved';
     });
 
-    $('#mealForm').addEventListener('submit', function (e) {
-      e.preventDefault();
-      if (!guardEdit()) return;
-      var inp = $('#mealInput');
-      var text = (inp.value || '').trim();
-      if (!text) return;
-      var day = ensureDay(S.view);
-      day.meals.push({ slot: S.slot, text: text.slice(0, 120) });
-      persist(S.view);
-      inp.value = '';
-      renderMeals();
-      inp.focus();
+    // Belt and braces: clicking away saves too, so nothing is lost.
+    box.addEventListener('blur', function () { if (foodDirty) saveFood(); });
+    box.addEventListener('keydown', function (e) {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); saveFood(); }
     });
 
-    $('#mealGroups').addEventListener('click', function (e) {
-      var b = e.target.closest ? e.target.closest('.meal-x') : null;
-      if (!b || !guardEdit()) return;
-      var day = ensureDay(S.view);
-      day.meals.splice(parseInt(b.getAttribute('data-i'), 10), 1);
-      persist(S.view);
-      renderMeals();
-    });
+    $('#foodSave').addEventListener('click', saveFood);
 
     var note = $('#note');
     note.addEventListener('input', function () {
@@ -390,6 +359,7 @@
   }
 
   function setView(date) {
+    if (foodDirty) saveFood();
     S.view = date;
     S.month = iso(new Date(fromISO(date).getFullYear(), fromISO(date).getMonth(), 1));
     renderAll();
@@ -408,7 +378,7 @@
     renderWeek();
     renderTasks();
     renderLock();
-    renderMeals();
+    renderFood();
     renderNote();
     renderCalendar();
     renderBars();
@@ -536,43 +506,40 @@
     }, 15000);
   }
 
-  var SVG_X_SMALL = '<svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7"/></svg>';
+  // Older days stored a list of {slot, text} entries; fold those into the
+  // free-text box so nothing logged before the change disappears.
+  function foodOf(day) {
+    if (typeof day.food === 'string') return day.food;
+    if (Array.isArray(day.meals) && day.meals.length) {
+      return day.meals.map(function (m) { return m.text; }).join('\n');
+    }
+    return '';
+  }
 
-  function renderMeals() {
-    var meals = dayOf(S.data, S.view).meals || [];
+  var foodDirty = false;
+
+  function saveFood() {
+    if (!guardEdit()) return;
+    var day = ensureDay(S.view);
+    day.food = $('#foodBox').value;
+    persist(S.view);
+    foodDirty = false;
+    $('#foodHint').textContent = 'saved';
+    setTimeout(function () { if (!foodDirty) $('#foodHint').innerHTML = '&nbsp;'; }, 1800);
+  }
+
+  function renderFood() {
+    var box = $('#foodBox');
     var locked = isLocked(S.view);
 
-    $('#mealSlots').innerHTML = SLOTS.map(function (sl) {
-      return '<button type="button" class="slot' + (sl.id === S.slot ? ' is-on' : '') +
-             '" data-slot="' + sl.id + '">' + sl.name + '</button>';
-    }).join('');
+    box.value = foodOf(dayOf(S.data, S.view));
+    box.readOnly = locked;
+    if (locked) box.placeholder = 'Nothing was logged for this day.';
+    else if (S.user) box.placeholder = S.user.mealsPlaceholder || 'What did you eat today?';
 
-    $('#mealsCount').textContent = meals.length
-      ? meals.length + (meals.length === 1 ? ' item' : ' items')
-      : '';
-
-    var html = '';
-    SLOTS.forEach(function (sl) {
-      var rows = '';
-      meals.forEach(function (m, i) {
-        if (m.slot !== sl.id) return;
-        rows += '<li class="meal-item"><span>' + esc(m.text) + '</span>' +
-                (locked ? '' : '<button type="button" class="meal-x" data-i="' + i +
-                                '" aria-label="Remove ' + esc(m.text) + '">' + SVG_X_SMALL + '</button>') +
-                '</li>';
-      });
-      if (rows) {
-        html += '<div class="meal-group"><span class="meal-slot-label">' + sl.name +
-                '</span><ul>' + rows + '</ul></div>';
-      }
-    });
-
-    $('#mealGroups').innerHTML = html ||
-      '<p class="meal-empty">' + (locked ? 'Nothing was logged for this day.' : 'Nothing yet \u2014 add what you ate.') + '</p>';
-
-    $('#mealInput').disabled = locked;
-    $('#mealGo').disabled = locked;
-    $('#mealForm').style.display = locked ? 'none' : '';
+    $('#foodActions').hidden = locked;
+    foodDirty = false;
+    $('#foodHint').innerHTML = '&nbsp;';
   }
 
   function renderNote() {

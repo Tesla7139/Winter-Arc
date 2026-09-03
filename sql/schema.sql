@@ -3,15 +3,14 @@
 -- Paste this whole file into Supabase -> SQL Editor -> Run.
 -- One row per person per day. Tasks live in a JSONB blob:
 --   { "gym": "done", "run": "miss", "water": "done" }
--- and the day's meals in a JSONB array:
---   [ { "slot": "lunch", "text": "rice, dal, 2 eggs" } ]
+-- The day's food is a single block of free text.
 -- =====================================================================
 
 create table if not exists public.winter_arc_days (
   user_id    text        not null,
   day        date        not null,
   tasks      jsonb       not null default '{}'::jsonb,
-  meals      jsonb       not null default '[]'::jsonb,
+  food       text        not null default '',
   note       text        not null default '',
   updated_at timestamptz not null default now(),
   primary key (user_id, day)
@@ -19,10 +18,11 @@ create table if not exists public.winter_arc_days (
 
 create index if not exists winter_arc_days_user_idx on public.winter_arc_days (user_id);
 
--- Already ran an earlier version of this file? This adds the meals column
--- without touching existing rows:
+-- Already ran an earlier version of this file? This adds the food column
+-- without touching existing rows. (An unused 'meals' column from an even
+-- earlier version is harmless; drop it by hand if you want it gone.)
 alter table public.winter_arc_days
-  add column if not exists meals jsonb not null default '[]'::jsonb;
+  add column if not exists food text not null default '';
 
 alter table public.winter_arc_days enable row level security;
 
