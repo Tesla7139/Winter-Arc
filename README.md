@@ -9,10 +9,10 @@ Double-click `index.html`. That's it — no build step, no server, no npm.
 
 Default passcodes (change them in `js/config.js`):
 
-| Person  | Passcode |
-|---------|----------|
-| Sarthak | `ronin`  |
-| Inan    | `bloom`  |
+| Person  | Passcode  |
+|---------|-----------|
+| Sarthak | `inan`    |
+| Inan    | `sarthak` |
 
 ## What's here
 
